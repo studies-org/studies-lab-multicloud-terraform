@@ -1,0 +1,5 @@
+# terraform init -backend-config=backend.hcl
+resource_group_name  = "<rg-do-tfstate>"
+storage_account_name = "<storage-account-do-tfstate>"
+container_name       = "tfstate"
+key                  = "staticsite-multicloud/azure.tfstate"
