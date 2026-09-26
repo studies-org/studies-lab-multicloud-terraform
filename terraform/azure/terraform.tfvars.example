@@ -1,0 +1,13 @@
+project  = "staticsite-multicloud"
+location = "brazilsouth"
+vm_count = 4
+vm_size  = "Standard_B1s"
+
+# Precisa ser único na região: vira <dns_label>.brazilsouth.cloudapp.azure.com
+dns_label = "staticsite-multicloud-<sufixo>"
+
+# Login só por chave SSH. Pode passar via TF_VAR_admin_ssh_public_key="$(cat ~/.ssh/id_ed25519.pub)"
+admin_ssh_public_key = "ssh-ed25519 AAAA... usuario@maquina"
+
+# SSH fica fechado por padrão. Para liberar, informe o seu IP:
+# ssh_allowed_cidrs = ["203.0.113.10/32"]
