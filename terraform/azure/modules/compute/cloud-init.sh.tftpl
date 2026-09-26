@@ -1,0 +1,5 @@
+#!/bin/bash
+apt-get update
+apt-get install -y apache2
+echo "staticsite-lb-multicloud - Azure - ${instance_name}" > /var/www/html/index.html
+systemctl enable --now apache2
