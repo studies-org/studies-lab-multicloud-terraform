@@ -56,7 +56,7 @@ resource "aws_instance" "instance01" {
     instance_type          = "t2.micro"
     subnet_id              = var.subnet1a_id_input
     vpc_security_group_ids = [aws_security_group.sgec2.id]
-    user_data              = <<EOF
+    user_data              = <<-EOF
         #!/bin/bash
         yum update -y
         yum install -y httpd
@@ -70,7 +70,7 @@ resource "aws_instance" "instance02" {
     instance_type          = "t2.micro"
     subnet_id              = var.subnet1a_id_input
     vpc_security_group_ids = [aws_security_group.sgec2.id]
-    user_data              = <<EOF
+    user_data              = <<-EOF
         #!/bin/bash
         yum update -y
         yum install -y httpd
@@ -84,7 +84,7 @@ resource "aws_instance" "instance03" {
     instance_type          = "t2.micro"
     subnet_id              = var.subnet1c_id_input
     vpc_security_group_ids = [aws_security_group.sgec2.id]
-    user_data              = <<EOF
+    user_data              = <<-EOF
         #!/bin/bash
         yum update -y
         yum install -y httpd
@@ -98,7 +98,7 @@ resource "aws_instance" "instance04" {
     instance_type          = "t2.micro"
     subnet_id              = var.subnet1c_id_input
     vpc_security_group_ids = [aws_security_group.sgec2.id]
-    user_data              = <<EOF
+    user_data              = <<-EOF
         #!/bin/bash
         yum update -y
         yum install -y httpd
