@@ -1,3 +1,12 @@
+data "aws_ami" "al2023" {
+    most_recent = true
+    owners      = ["amazon"]
+    filter {
+        name   = "name"
+        values = ["al2023-ami-2023.*-x86_64"]
+    }
+}
+
 resource "aws_security_group" "sglb" {
     vpc_id = var.vpc_id_input
     egress {
@@ -52,7 +61,7 @@ resource "aws_security_group" "sgec2" {
 }
 
 resource "aws_instance" "instance01" {
-    ami                    = "ami-0f409bae3775dc8e5"
+    ami                    = data.aws_ami.al2023.id
     instance_type          = "t2.micro"
     subnet_id              = var.subnet1a_id_input
     vpc_security_group_ids = [aws_security_group.sgec2.id]
@@ -66,7 +75,7 @@ resource "aws_instance" "instance01" {
 }
 
 resource "aws_instance" "instance02" {
-    ami                    = "ami-0f409bae3775dc8e5"
+    ami                    = data.aws_ami.al2023.id
     instance_type          = "t2.micro"
     subnet_id              = var.subnet1a_id_input
     vpc_security_group_ids = [aws_security_group.sgec2.id]
@@ -80,7 +89,7 @@ resource "aws_instance" "instance02" {
 }
 
 resource "aws_instance" "instance03" {
-    ami                    = "ami-0f409bae3775dc8e5"
+    ami                    = data.aws_ami.al2023.id
     instance_type          = "t2.micro"
     subnet_id              = var.subnet1c_id_input
     vpc_security_group_ids = [aws_security_group.sgec2.id]
@@ -94,7 +103,7 @@ resource "aws_instance" "instance03" {
 }
 
 resource "aws_instance" "instance04" {
-    ami                    = "ami-0f409bae3775dc8e5"
+    ami                    = data.aws_ami.al2023.id
     instance_type          = "t2.micro"
     subnet_id              = var.subnet1c_id_input
     vpc_security_group_ids = [aws_security_group.sgec2.id]
