@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  TF_VERSION: 1.9.8
+
+jobs:
+  terraform:
+    name: Terraform (${{ matrix.cloud }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        cloud: [aws, azure]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: terraform fmt
+        run: terraform fmt -check -recursive terraform/${{ matrix.cloud }}
+
+      - name: terraform init (sem backend)
+        run: terraform -chdir=terraform/${{ matrix.cloud }} init -backend=false -input=false
+
+      - name: terraform validate
+        run: terraform -chdir=terraform/${{ matrix.cloud }} validate
+
+  site:
+    name: Site + simulação local
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: shellcheck
+        run: shellcheck site/render.sh
+
+      - name: Sobe 4 Apache atrás do nginx
+        run: docker compose -f local/docker-compose.yml up -d --wait
+
+      - name: Round-robin entrega as 4 instâncias
+        run: |
+          for _ in $(seq 8); do
+            curl -fsS http://localhost:8080/ | grep -oE 'web-<em>[0-9]+' | sed 's/<em>//'
+          done | sort -u | tee vistos.txt
+          test "$(wc -l < vistos.txt)" -eq 4
+
+      - name: Nenhum marcador sem preencher
+        run: "! curl -fsS http://localhost:8080/ | grep -q '{{'"
+
+      - name: Derruba
+        if: always()
+        run: docker compose -f local/docker-compose.yml down
