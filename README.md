@@ -194,4 +194,4 @@ Com a infraestrutura no ar:
 
 ## Autor
 
-**William Coelho** · RM 556336 · [@willtechdev](https://github.com/willtechdev)
+**William Coelho** · [@willtechdev](https://github.com/willtechdev)
