@@ -1,0 +1,76 @@
+name: Deploy (manual)
+
+# Só roda quando alguém dispara pela aba Actions. Nada é aplicado em push.
+on:
+  workflow_dispatch:
+    inputs:
+      cloud:
+        description: Nuvem
+        type: choice
+        options: [aws, azure]
+      action:
+        description: Ação
+        type: choice
+        default: plan
+        options: [plan, apply, destroy]
+
+permissions:
+  contents: read
+
+env:
+  TF_VERSION: 1.9.8
+  TF_IN_AUTOMATION: "true"
+  DIR: terraform/${{ inputs.cloud }}
+
+jobs:
+  terraform:
+    name: ${{ inputs.action }} em ${{ inputs.cloud }}
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.cloud }}
+    env:
+      # Azure (service principal)
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      TF_VAR_admin_ssh_public_key: ${{ secrets.ADMIN_SSH_PUBLIC_KEY }}
+      TF_VAR_dns_label: ${{ vars.AZURE_DNS_LABEL }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Credenciais AWS
+        if: inputs.cloud == 'aws'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: us-east-1
+
+      - name: Backend remoto
+        # Conteúdo no formato do backend.hcl.example da nuvem escolhida
+        run: printf '%s\n' "$BACKEND_HCL" > "$DIR/backend.hcl"
+        env:
+          BACKEND_HCL: ${{ secrets.BACKEND_HCL }}
+
+      - run: terraform -chdir="$DIR" init -input=false -backend-config=backend.hcl
+
+      - name: plan
+        if: inputs.action != 'destroy'
+        run: terraform -chdir="$DIR" plan -input=false -out=tfplan
+
+      - name: apply
+        if: inputs.action == 'apply'
+        run: terraform -chdir="$DIR" apply -input=false tfplan
+
+      - name: destroy
+        if: inputs.action == 'destroy'
+        run: terraform -chdir="$DIR" destroy -input=false -auto-approve
+
+      - name: outputs
+        if: inputs.action == 'apply'
+        run: terraform -chdir="$DIR" output
