@@ -17,8 +17,6 @@ override.tf.json
 .terraformrc
 terraform.rc
 
-# Simulação local
-local/html/
 
 # Sistema
 .DS_Store

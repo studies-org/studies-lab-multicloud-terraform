@@ -51,6 +51,8 @@ resource "aws_instance" "web" {
 
   user_data = templatefile("${path.module}/user-data.sh.tftpl", {
     instance_name = format("web-%02d", count.index + 1)
+    site_html_b64 = base64encode(var.site_html)
+    render_sh_b64 = base64encode(var.render_script)
   })
 
   metadata_options {

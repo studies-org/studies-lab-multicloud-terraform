@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="pt-BR" data-cloud="{{CLOUD_KEY}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{INSTANCE}} · {{CLOUD}} · site estático multicloud</title>
+<style>
+:root{--bg:#f5f3ee;--card:#fffdf8;--ink:#1c1f23;--muted:#6b6f76;--line:#e3dfd6;--accent:#c46f00;--soft:#f6e6cf}
+[data-cloud=azure]{--accent:#0a64b4;--soft:#dcebf8}
+[data-cloud=local]{--accent:#2d7a55;--soft:#dcefe3}
+@media (prefers-color-scheme:dark){:root{--bg:#15171a;--card:#1c1f23;--ink:#ecebe7;--muted:#9a9ea5;--line:#2c3036;--soft:#3a2a14}[data-cloud=azure]{--soft:#132a40}[data-cloud=local]{--soft:#15301f}[data-cloud=aws]{--accent:#f0a030}[data-cloud=azure]{--accent:#4aa3f0}[data-cloud=local]{--accent:#5cc28e}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh;display:flex;flex-direction:column}
+.wrap{width:100%;max-width:880px;margin:0 auto;padding:0 24px}
+header{border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.brand{font-weight:600;letter-spacing:.01em}
+.brand span{color:var(--muted);font-weight:400}
+.pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:4px 12px;font-size:13px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+main{flex:1;padding:56px 0 40px}
+.kicker{font-size:13px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin:0 0 10px}
+h1{font:600 clamp(56px,11vw,112px)/1 "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;margin:0;letter-spacing:-.02em}
+h1 em{font-style:normal;color:var(--accent)}
+.lead{font-size:19px;margin:18px 0 40px;max-width:560px}
+.lead b{color:var(--accent)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden}
+.cell{padding:16px 18px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);margin:0 -1px -1px 0}
+.cell dt{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.cell dd{margin:4px 0 0;font:500 15px/1.4 ui-monospace,"SF Mono",Menlo,Consolas,monospace;overflow-wrap:anywhere}
+.how{display:flex;gap:16px;align-items:flex-start;margin-top:28px;padding:18px 20px;border-radius:14px;background:var(--soft)}
+.how svg{flex:none;margin-top:2px}
+.how p{margin:0}
+kbd{font:12px ui-monospace,Menlo,monospace;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 6px;background:var(--card)}
+button{font:inherit;cursor:pointer;margin-top:28px;border:0;border-radius:10px;padding:11px 18px;background:var(--ink);color:var(--bg)}
+button:hover{background:var(--accent)}
+footer{border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:space-between;padding:18px 24px}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="brand">staticsite-lb <span>/ multicloud</span></div>
+  <div class="pill"><i class="dot"></i>{{CLOUD}} · {{REGION}}</div>
+</div></header>
+<main><div class="wrap">
+  <p class="kicker">Esta página foi entregue por</p>
+  <h1>{{INSTANCE_PREFIX}}<em>{{INSTANCE_NUM}}</em></h1>
+  <p class="lead">Uma das instâncias atrás do <b>{{LB}}</b>. O conteúdo é o mesmo em todas; muda só quem responde.</p>
+  <dl class="grid">
+    <div class="cell"><dt>Nuvem</dt><dd>{{CLOUD}}</dd></div>
+    <div class="cell"><dt>Região</dt><dd>{{REGION}}</dd></div>
+    <div class="cell"><dt>Zona</dt><dd>{{ZONE}}</dd></div>
+    <div class="cell"><dt>Hostname</dt><dd>{{HOSTNAME}}</dd></div>
+    <div class="cell"><dt>IP privado</dt><dd>{{PRIVATE_IP}}</dd></div>
+    <div class="cell"><dt>Load balancer</dt><dd>{{LB}}</dd></div>
+    <div class="cell"><dt>Servidor</dt><dd>{{SERVER}}</dd></div>
+    <div class="cell"><dt>Página gerada em</dt><dd>{{BOOTED_AT}}</dd></div>
+  </dl>
+  <div class="how">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>
+    <p>Recarregue com <kbd>Ctrl</kbd> + <kbd>R</kbd>: o load balancer distribui cada requisição entre as instâncias saudáveis, então o nome acima troca.</p>
+  </div>
+  <button type="button" onclick="location.reload()">Recarregar</button>
+</div></main>
+<footer><div class="wrap">
+  <span>Provisionado com Terraform</span>
+  <span>AWS: ALB + EC2 · Azure: Load Balancer + VMs</span>
+</div></footer>
+</body>
+</html>

@@ -39,3 +39,13 @@ variable "ssh_allowed_cidrs" {
   type        = list(string)
   default     = []
 }
+
+variable "site_html" {
+  description = "Modelo HTML do site (site/index.html)"
+  type        = string
+}
+
+variable "render_script" {
+  description = "Script que preenche o modelo no boot (site/render.sh)"
+  type        = string
+}

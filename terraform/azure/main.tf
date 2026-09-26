@@ -27,6 +27,9 @@ module "network" {
 module "compute" {
   source = "./modules/compute"
 
+  site_html     = file("${path.root}/../../site/index.html")
+  render_script = file("${path.root}/../../site/render.sh")
+
   project              = var.project
   location             = azurerm_resource_group.this.location
   resource_group_name  = azurerm_resource_group.this.name

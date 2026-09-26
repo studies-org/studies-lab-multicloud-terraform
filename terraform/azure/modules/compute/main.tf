@@ -60,5 +60,7 @@ resource "azurerm_linux_virtual_machine" "web" {
 
   custom_data = base64encode(templatefile("${path.module}/cloud-init.sh.tftpl", {
     instance_name = local.vm_names[count.index]
+    site_html_b64 = base64encode(var.site_html)
+    render_sh_b64 = base64encode(var.render_script)
   }))
 }
