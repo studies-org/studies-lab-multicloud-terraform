@@ -1,0 +1,8 @@
+project        = "staticsite-multicloud"
+region         = "us-east-1"
+instance_count = 4
+instance_type  = "t3.micro"
+
+# SSH fica fechado por padrão. Para liberar, informe o seu IP e um key pair:
+# key_name          = "minha-chave"
+# ssh_allowed_cidrs = ["203.0.113.10/32"]
