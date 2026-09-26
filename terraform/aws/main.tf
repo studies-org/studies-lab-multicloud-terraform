@@ -20,6 +20,9 @@ module "lb" {
 module "compute" {
   source = "./modules/compute"
 
+  site_html     = file("${path.root}/../../site/index.html")
+  render_script = file("${path.root}/../../site/render.sh")
+
   project           = var.project
   vpc_id            = module.network.vpc_id
   subnet_ids        = module.network.subnet_ids
