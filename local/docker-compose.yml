@@ -1,0 +1,48 @@
+# Simulação local do lab: 4 "instâncias" Apache com a mesma página
+# atrás de um nginx em round-robin, fazendo o papel do load balancer.
+# Uso: docker compose -f local/docker-compose.yml up -d  ->  http://localhost:8080
+
+x-web: &web
+  image: httpd:2.4-alpine
+  entrypoint: ["/bin/sh", "-c"]
+  command:
+    - /site/render.sh /site/index.html /usr/local/apache2/htdocs/index.html && exec httpd-foreground
+  volumes:
+    - ../site:/site:ro
+  healthcheck:
+    test: ["CMD", "wget", "-qO-", "http://127.0.0.1/"]
+    interval: 5s
+    retries: 5
+
+x-env: &env
+  CLOUD: Local
+  CLOUD_KEY: local
+  REGION: docker
+  LB: nginx
+  SERVER: Apache httpd
+
+services:
+  web-01:
+    <<: *web
+    environment: { <<: *env, INSTANCE: web-01, ZONE: zona-a }
+  web-02:
+    <<: *web
+    environment: { <<: *env, INSTANCE: web-02, ZONE: zona-a }
+  web-03:
+    <<: *web
+    environment: { <<: *env, INSTANCE: web-03, ZONE: zona-b }
+  web-04:
+    <<: *web
+    environment: { <<: *env, INSTANCE: web-04, ZONE: zona-b }
+
+  lb:
+    image: nginx:1.27-alpine
+    ports:
+      - "${LOCAL_PORT:-8080}:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      web-01: { condition: service_healthy }
+      web-02: { condition: service_healthy }
+      web-03: { condition: service_healthy }
+      web-04: { condition: service_healthy }
