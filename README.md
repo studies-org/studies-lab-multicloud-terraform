@@ -187,7 +187,7 @@ Simulação local: recarregar `http://localhost:8080` 8 vezes deve mostrar `web-
 Com a infraestrutura no ar:
 
 - `terraform output site_url` devolve o endereço do ALB (AWS) ou `<dns_label>.brazilsouth.cloudapp.azure.com` (Azure);
-- `curl -s <site_url> | grep -o 'web-<em>[0-9]*'` (ou `vm-`) muda de instância entre as chamadas;
+- `curl -s <site_url> | grep -o 'web-<em>[0-9]*'` (ou `vm-`) muda de instância entre as chamadas. O ALB distribui por requisição; o Load Balancer da Azure distribui por conexão (hash de 5 tuplas), então no navegador, que reaproveita a conexão, a troca aparece melhor com `curl` ou numa aba anônima;
 - o target group da AWS e o probe da Azure mostram os 4 servidores saudáveis;
 - a página mostra a região e a zona reais lidas do serviço de metadados;
 - `terraform destroy` remove tudo ao final.
