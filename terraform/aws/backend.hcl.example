@@ -1,0 +1,5 @@
+# terraform init -backend-config=backend.hcl
+bucket         = "<bucket-do-tfstate>"
+key            = "staticsite-multicloud/aws.tfstate"
+region         = "us-east-1"
+dynamodb_table = "<tabela-de-lock>"

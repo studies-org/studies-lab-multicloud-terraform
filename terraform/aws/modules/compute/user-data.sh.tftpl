@@ -1,0 +1,4 @@
+#!/bin/bash
+dnf install -y httpd
+echo "staticsite-lb-multicloud - AWS - ${instance_name}" > /var/www/html/index.html
+systemctl enable --now httpd
